@@ -14,11 +14,11 @@ namespace Mvc_Repository.Controllers
 {
     public class CategoryController : Controller
     {
-        private IRepository<Categories> categoryRepository;
+        private ICategoryRepository categoryRepository;
 
         public CategoryController()
         {
-            this.categoryRepository = new GenericRepository<Categories>();
+            this.categoryRepository = new CategoryRepository();
         }
 
 
@@ -38,7 +38,7 @@ namespace Mvc_Repository.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var category = this.categoryRepository.Get(x => x.CategoryID == id.Value);
+            var category = this.categoryRepository.GetByID(id.Value);
             if (category == null)
             {
                 return HttpNotFound();
@@ -75,7 +75,7 @@ namespace Mvc_Repository.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var category = this.categoryRepository.Get(x => x.CategoryID == id.Value);
+            var category = this.categoryRepository.GetByID(id.Value);
             if (category == null)
             {
                 return HttpNotFound();
@@ -105,7 +105,7 @@ namespace Mvc_Repository.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var category = this.categoryRepository.Get(x => x.CategoryID == id.Value);
+            var category = this.categoryRepository.GetByID(id.Value);
             if (category == null)
             {
                 return HttpNotFound();
@@ -118,7 +118,7 @@ namespace Mvc_Repository.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var category = this.categoryRepository.Get(x => x.CategoryID == id);
+            var category = this.categoryRepository.GetByID(id);
             this.categoryRepository.Delete(category);
             return RedirectToAction("Index");
         }
