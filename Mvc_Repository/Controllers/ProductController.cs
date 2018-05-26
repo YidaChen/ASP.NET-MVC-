@@ -14,14 +14,8 @@ namespace Mvc_Repository.Controllers
 {
     public class ProductController : Controller
     {
-        private IProductRepository productRepository;
-        private ICategoryRepository categoryRepository;
-
-        public ProductController()
-        {
-            this.productRepository = new ProductRepository();
-            this.categoryRepository = new CategoryRepository();
-        }
+        private IRepository<Products> productRepository;
+        private IRepository<Categories> categoryRepository;
         private IEnumerable<Categories> Categories
         {
             get
@@ -29,10 +23,19 @@ namespace Mvc_Repository.Controllers
                 return categoryRepository.GetAll();
             }
         }
+
+        public ProductController()
+        {
+            this.productRepository = new GenericRepository<Products>();
+            this.categoryRepository = new GenericRepository<Categories>();
+        }
+        
         // GET: Product
         public ActionResult Index()
         {
-            var products = productRepository.GetAll().ToList();
+            var products = productRepository.GetAll()
+                .OrderByDescending(x => x.ProductID)
+                .ToList();
             return View(products);
         }
 
@@ -43,7 +46,7 @@ namespace Mvc_Repository.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Products product = productRepository.Get(id.Value);
+            Products product = productRepository.Get(x => x.ProductID == id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -82,7 +85,7 @@ namespace Mvc_Repository.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Products product = this.productRepository.Get(id.Value);
+            Products product = this.productRepository.Get(x => x.ProductID == id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -114,7 +117,7 @@ namespace Mvc_Repository.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Products product = this.productRepository.Get(id.Value);
+            Products product = this.productRepository.Get(x => x.ProductID == id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -127,7 +130,7 @@ namespace Mvc_Repository.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Products product = this.productRepository.Get(id);
+            Products product = this.productRepository.Get(x => x.ProductID == id);
             this.productRepository.Delete(product);
             return RedirectToAction("Index");
         }
