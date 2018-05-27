@@ -7,8 +7,13 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+	@Html.ActionLink("Create New", "Create", new { category = Request.QueryString["category"] })
 </p>
+<form method="get" action="/Product">
+@Html.Label("產品類別")
+@Html.DropDownList("category", (List<SelectListItem>)ViewBag.CategorySelectList)
+	<button type="submit">submit</button>
+</form>
 <table class="table">
     <tr>
         <th>
@@ -42,40 +47,40 @@
     </tr>
 
 @foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ProductName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SupplierID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QuantityPerUnit)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UnitPrice)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UnitsInStock)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UnitsOnOrder)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ReorderLevel)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Discontinued)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Categories.CategoryName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ProductID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ProductID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ProductID })
-        </td>
-    </tr>
+	<tr>
+		<td>
+			@Html.DisplayFor(modelItem => item.ProductName)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.SupplierID)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.QuantityPerUnit)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.UnitPrice)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.UnitsInStock)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.UnitsOnOrder)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.ReorderLevel)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.Discontinued)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.Categories.CategoryName)
+		</td>
+		<td>
+			@Html.ActionLink("Edit", "Edit", new { id = item.ProductID, category = Request.QueryString["category"] }) |
+			@Html.ActionLink("Details", "Details", new { id = item.ProductID }) |
+			@Html.ActionLink("Delete", "Delete", new { id = item.ProductID, category = Request.QueryString["category"] })
+		</td>
+	</tr>
 }
 
 </table>
