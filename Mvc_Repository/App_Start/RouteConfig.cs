@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Mvc_Repository
+namespace Mvc_Repository.Web
 {
     public class RouteConfig
     {
@@ -16,7 +16,7 @@ namespace Mvc_Repository
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Product", action = "Index", id = UrlParameter.Optional }
             );
         }
     }
