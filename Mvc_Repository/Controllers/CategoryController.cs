@@ -1,126 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Mvc_Repository.Models;
-using Mvc_Repository.Models.Interface;
-using Mvc_Repository.Models.Repository;
+using Mvc_Repository.Service;
+using Mvc_Repository.Service.Interface;
 
 namespace Mvc_Repository.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        private ICategoryRepository categoryRepository;
+        private ICategoryService categoryService;
 
         public CategoryController()
         {
-            this.categoryRepository = new CategoryRepository();
+            this.categoryService = new CategoryService();
         }
 
+        //=========================================================================================
 
-        // GET: Category
         public ActionResult Index()
         {
-            var categories = this.categoryRepository.GetAll()
+            var categories = this.categoryService.GetAll()
                 .OrderByDescending(x => x.CategoryID)
                 .ToList();
+
             return View(categories);
         }
 
-        // GET: Category/Details/5
+        //=========================================================================================
+
         public ActionResult Details(int? id)
         {
-            if (id == null)
+            if (!id.HasValue)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index");
             }
-            var category = this.categoryRepository.GetByID(id.Value);
-            if (category == null)
+            else
             {
-                return HttpNotFound();
+                var category = this.categoryService.GetByID(id.Value);
+                return View(category);
             }
-            return View(category);
         }
 
-        // GET: Category/Create
+        //=========================================================================================
+
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Category/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CategoryID,CategoryName,Description,Picture")] Categories category)
+        public ActionResult Create(Categories category)
         {
-            if (ModelState.IsValid)
+            if (category != null && ModelState.IsValid)
             {
-                this.categoryRepository.Create(category);
-                return RedirectToAction("Index");
+                this.categoryService.Create(category);
+                return RedirectToAction("index");
             }
-
-            return View(category);
+            else
+            {
+                return View(category);
+            }
         }
 
-        // GET: Category/Edit/5
+        //=========================================================================================
+
         public ActionResult Edit(int? id)
         {
-            if (id == null)
+            if (!id.HasValue)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index");
             }
-            var category = this.categoryRepository.GetByID(id.Value);
-            if (category == null)
+            else
             {
-                return HttpNotFound();
+                var category = this.categoryService.GetByID(id.Value);
+                return View(category);
             }
-            return View(category);
         }
 
-        // POST: Category/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CategoryID,CategoryName,Description,Picture")] Categories category)
+        public ActionResult Edit(Categories category)
         {
-            if (ModelState.IsValid)
+            if (category != null && ModelState.IsValid)
             {
-                this.categoryRepository.Update(category);
-                return RedirectToAction("Index");
+                this.categoryService.Update(category);
+                return View(category);
             }
-            return View(category);
+            else
+            {
+                return RedirectToAction("index");
+            }
         }
 
-        // GET: Category/Delete/5
+        //=========================================================================================
+
         public ActionResult Delete(int? id)
         {
-            if (id == null)
+            if (!id.HasValue)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index");
             }
-            var category = this.categoryRepository.GetByID(id.Value);
-            if (category == null)
+            else
             {
-                return HttpNotFound();
+                var category = this.categoryService.GetByID(id.Value);
+                return View(category);
             }
-            return View(category);
         }
 
-        // POST: Category/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var category = this.categoryRepository.GetByID(id);
-            this.categoryRepository.Delete(category);
-            return RedirectToAction("Index");
+            try
+            {
+                this.categoryService.Delete(id);
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete", new { id = id });
+            }
+            return RedirectToAction("index");
         }
+
     }
 }
